@@ -13,9 +13,9 @@
         >
 
         <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_marginTop="50dp"
             android:layout_gravity="center"
-            android:id="@+id/progressBarFeatures"
             android:layout_width="80dp"
             android:layout_height="80dp"
             />
@@ -25,6 +25,13 @@
             android:id="@+id/includeQuestions"
             layout="@layout/questions_format"
         />
+
+        <TextView
+            android:id="@+id/questionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check"
+            />
 
     </LinearLayout>
 
