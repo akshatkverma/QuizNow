@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import org.json.JSONObject.NULL
 
 
 class QuestionsFragment : Fragment() {
@@ -22,10 +23,12 @@ class QuestionsFragment : Fragment() {
 
     private val questions = mutableListOf<Questions>()
 
-    private val selectedAnswers = mutableListOf(false, false, false, false)
+    private var selectedAnswers = mutableListOf(false, false, false, false)
 
     private var timeEachQuestion: Int = 0
     private var currentQuestion: Int = 0
+    private var score : Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +52,17 @@ class QuestionsFragment : Fragment() {
         }
         binding.includeQuestions.option4.setOnClickListener {
             toggleColor(binding.includeQuestions.option4, 3)
+        }
+
+        binding.includeQuestions.skipButton.setOnClickListener {
+            currentQuestion++
+            updateQuestion()
+        }
+
+        binding.includeQuestions.submitButton.setOnClickListener {
+            checkAnswers()
+            currentQuestion++
+            updateQuestion()
         }
 
         getData()
@@ -89,7 +103,9 @@ class QuestionsFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.includeQuestions.questionsFormatLL.visibility = View.VISIBLE
                 currentQuestion = 0
+                score = 0
                 runCounters()
+                updateQuestion()
             },
             {
                 Toast.makeText(requireContext(), "Some Error Occurred $it", Toast.LENGTH_SHORT)
@@ -101,43 +117,43 @@ class QuestionsFragment : Fragment() {
         queue.add(jsonObjectRequest)
     }
 
-    // Recursive function to run timers and calls updateQuestion()
+    // Set-up the timer on the top
     private fun runCounters() {
-        updateQuestion()
         var counter = 0
-        object : CountDownTimer((0.1 * 60 * 1000).toLong(), 1000) {
+        object : CountDownTimer((timeEachQuestion * 60 * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                binding.includeQuestions.timer.text = (0.1 * 60 - counter).toString()
+                binding.includeQuestions.timer.text = (timeEachQuestion * 60 - counter).toString()
                 counter++
             }
-
             override fun onFinish() {
-                currentQuestion++
-                vibratePhone()
-                if (currentQuestion <= questions.size - 1)
-                    runCounters()
-                else
-                    binding.includeQuestions.timer.text = "Finished"
+
             }
         }.start()
-
     }
 
     // Function to update questions.
     private fun updateQuestion() {
+        if(currentQuestion >= questions.size)
+            return
+        selectedAnswers = mutableListOf(false, false, false, false)
+
         binding.includeQuestions.questionTL.text = questions[currentQuestion].question
 
         binding.includeQuestions.option1.text = questions[currentQuestion].option1
         binding.includeQuestions.option1.setBackgroundColor(Color.BLACK)
+        binding.includeQuestions.option1.isEnabled = true
 
         binding.includeQuestions.option2.text = questions[currentQuestion].option2
         binding.includeQuestions.option2.setBackgroundColor(Color.BLACK)
+        binding.includeQuestions.option2.isEnabled = true
 
         binding.includeQuestions.option3.text = questions[currentQuestion].option3
         binding.includeQuestions.option3.setBackgroundColor(Color.BLACK)
+        binding.includeQuestions.option3.isEnabled = true
 
         binding.includeQuestions.option4.text = questions[currentQuestion].option4
         binding.includeQuestions.option4.setBackgroundColor(Color.BLACK)
+        binding.includeQuestions.option4.isEnabled = true
     }
 
     // Function to vibrate phone, will be used after each question ends.
@@ -151,12 +167,26 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun toggleColor(button : MaterialButton, index : Int){
-        if(!selectedAnswers[index])
+        if(currentQuestion >= questions.size)
+            return
+        selectedAnswers[index] = true
+        button.isEnabled = false
+        if(questions[currentQuestion].correctAnswers[index])
             button.setBackgroundColor(Color.GREEN)
         else
-            button.setBackgroundColor(Color.BLACK)
+            button.setBackgroundColor(Color.RED)
+    }
 
-        selectedAnswers[index] = !selectedAnswers[index]
+    private fun checkAnswers() {
+        if(currentQuestion >= questions.size)
+            return
+        if(questions[currentQuestion].correctAnswers == selectedAnswers)
+            score++
+        binding.includeQuestions.scoreText.text = "Current Score : $score"
+    }
+
+    private fun endQuiz() {
+
     }
 
 }

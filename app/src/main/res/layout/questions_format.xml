@@ -92,12 +92,45 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_marginTop="15dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/skipButton"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Skip"
+                android:layout_gravity="left"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_gravity="right"
+
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/scoreText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Skip"
-            android:layout_gravity="center"
+            android:text="Current Score : 0"
+            android:textSize="25sp"
             />
 
     </LinearLayout>
