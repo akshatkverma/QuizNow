@@ -13,7 +13,17 @@
         android:visibility="gone"
         >
 
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="05:00"
+            android:textAlignment="viewEnd"
+            android:textSize="35sp"
+            />
+
     <TextView
+        android:id="@+id/questionTL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="This is a question"
@@ -31,18 +41,22 @@
             >
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/option1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Option 1"
                 android:layout_weight="1"
+                android:backgroundTint="@color/black"
                 android:layout_margin="10dp"
                 />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/option2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Option 2"
+                android:backgroundTint="@color/black"
                 android:layout_margin="10dp"
                 />
 
@@ -57,17 +71,21 @@
             >
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/option3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Option 3"
                 android:layout_weight="1"
+                android:backgroundTint="@color/black"
                 android:layout_margin="10dp"
                 />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/option4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/black"
                 android:text="Option 4"
                 android:layout_margin="10dp"
                 />
