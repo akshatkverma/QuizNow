@@ -28,5 +28,9 @@ class StartGameFragment : Fragment() {
         binding.startGameButton.setOnClickListener {
             findNavController().navigate(StartGameFragmentDirections.actionStartGameFragmentToQuestionsFragment())
         }
+
+        binding.profileSectionButton.setOnClickListener {
+            findNavController().navigate(StartGameFragmentDirections.actionStartGameFragmentToProfileFragment())
+        }
     }
 }

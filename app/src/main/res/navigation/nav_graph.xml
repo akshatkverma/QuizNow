@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_startGameFragment_to_questionsFragment"
             app:destination="@id/questionsFragment" />
+        <action
+            android:id="@+id/action_startGameFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/questionsFragment"
@@ -27,5 +30,14 @@
         <action
             android:id="@+id/action_signInFragment_to_startGameFragment"
             app:destination="@id/startGameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="akshat.assignment.quiznow.fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
     </fragment>
 </navigation>

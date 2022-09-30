@@ -4,6 +4,7 @@ import akshat.assignment.quiznow.R
 import akshat.assignment.quiznow.databinding.FragmentSignInBinding
 import android.content.Intent
 import android.os.Bundle
+import android.system.Os.accept
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.NonCancellable.cancel
 
 
 class SignInFragment : Fragment() {
@@ -57,6 +60,54 @@ class SignInFragment : Fragment() {
             val intent = googleSignInClient.signInIntent
             startActivityForResult(intent, RC_SIGN_IN)
         }
+
+        binding.loginButton.setOnClickListener {
+            val email = binding.email.text.toString()
+            val password = binding.password.text.toString()
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
+                        val user = firebaseAuth.currentUser
+                        checkUser()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                        giveSignUpOption()
+                        checkUser()
+                    }
+                }
+        }
+    }
+
+    private fun giveSignUpOption() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Sign Up ?")
+            .setMessage("You have not made an ID with this e-mail. Continue with making anew id")
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Sign Up") { dialog, _ ->
+                val email = binding.email.text.toString()
+                val password = binding.password.text.toString()
+                firebaseAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success")
+                            val user = firebaseAuth.currentUser
+                            checkUser()
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                            Toast.makeText(requireContext(), "Authentication failed ${task.exception}", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                            checkUser()
+                        }
+                    }
+            }
+            .show()
     }
 
     private fun checkUser() {
