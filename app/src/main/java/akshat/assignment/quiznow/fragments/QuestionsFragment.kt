@@ -1,7 +1,9 @@
 package akshat.assignment.quiznow.fragments
 
+import akshat.assignment.quiznow.dao.UserDao
 import akshat.assignment.quiznow.databinding.FragmentQuestionsBinding
 import akshat.assignment.quiznow.entities.Questions
+import akshat.assignment.quiznow.entities.User
 import android.content.Context
 import android.graphics.Color
 import android.os.*
@@ -10,10 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
-import org.json.JSONObject.NULL
+import com.google.firebase.auth.FirebaseAuth
 
 
 class QuestionsFragment : Fragment() {
@@ -27,7 +30,9 @@ class QuestionsFragment : Fragment() {
 
     private var timeEachQuestion: Int = 0
     private var currentQuestion: Int = 0
-    private var score : Int = 0
+    private var score: Int = 0
+
+    private lateinit var firebaseAuth: FirebaseAuth
 
 
     override fun onCreateView(
@@ -40,6 +45,8 @@ class QuestionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAuth = FirebaseAuth.getInstance()
 
         binding.includeQuestions.option1.setOnClickListener {
             toggleColor(binding.includeQuestions.option1, 0)
@@ -66,6 +73,7 @@ class QuestionsFragment : Fragment() {
         }
 
         getData()
+
     }
 
     // Function to get questions data from API
@@ -125,16 +133,20 @@ class QuestionsFragment : Fragment() {
                 binding.includeQuestions.timer.text = (timeEachQuestion * 60 - counter).toString()
                 counter++
             }
-            override fun onFinish() {
 
+            override fun onFinish() {
+                Toast.makeText(requireContext(), "Time Over", Toast.LENGTH_SHORT).show()
+                endQuiz()
             }
         }.start()
     }
 
     // Function to update questions.
     private fun updateQuestion() {
-        if(currentQuestion >= questions.size)
+        if (currentQuestion >= questions.size) {
+            endQuiz()
             return
+        }
         selectedAnswers = mutableListOf(false, false, false, false)
 
         binding.includeQuestions.questionTL.text = questions[currentQuestion].question
@@ -166,27 +178,36 @@ class QuestionsFragment : Fragment() {
         }
     }
 
-    private fun toggleColor(button : MaterialButton, index : Int){
-        if(currentQuestion >= questions.size)
+    private fun toggleColor(button: MaterialButton, index: Int) {
+        if (currentQuestion >= questions.size) {
+            endQuiz()
             return
+        }
         selectedAnswers[index] = true
         button.isEnabled = false
-        if(questions[currentQuestion].correctAnswers[index])
+        if (questions[currentQuestion].correctAnswers[index])
             button.setBackgroundColor(Color.GREEN)
         else
             button.setBackgroundColor(Color.RED)
     }
 
     private fun checkAnswers() {
-        if(currentQuestion >= questions.size)
+        if (currentQuestion >= questions.size) {
+            endQuiz()
             return
-        if(questions[currentQuestion].correctAnswers == selectedAnswers)
+        }
+        if (questions[currentQuestion].correctAnswers == selectedAnswers)
             score++
         binding.includeQuestions.scoreText.text = "Current Score : $score"
     }
 
     private fun endQuiz() {
-
+//        Toast.makeText(requireContext(), "$score && ${questions.size}", Toast.LENGTH_SHORT).show()
+        val dao = UserDao()
+        val currentUser = firebaseAuth.currentUser !!
+        val user = User(currentUser.uid, currentUser.displayName.toString() , mutableListOf())
+        dao.addQuizDetails("$score out of ${questions.size}", user)
+        findNavController().navigate(QuestionsFragmentDirections.actionQuestionsFragmentToResultFragment(score = score, maxScore = questions.size))
     }
 
 }

@@ -9,7 +9,7 @@
         android:id="@+id/startGameFragment"
         android:name="akshat.assignment.quiznow.fragments.StartGameFragment"
         android:label="fragment_start_game"
-        tools:layout="@layout/fragment_start_game" >
+        tools:layout="@layout/fragment_start_game">
         <action
             android:id="@+id/action_startGameFragment_to_questionsFragment"
             app:destination="@id/questionsFragment" />
@@ -21,12 +21,16 @@
         android:id="@+id/questionsFragment"
         android:name="akshat.assignment.quiznow.fragments.QuestionsFragment"
         android:label="fragment_questions"
-        tools:layout="@layout/fragment_questions" />
+        tools:layout="@layout/fragment_questions" >
+        <action
+            android:id="@+id/action_questionsFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signInFragment"
         android:name="akshat.assignment.quiznow.fragments.SignInFragment"
         android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" >
+        tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_startGameFragment"
             app:destination="@id/startGameFragment" />
@@ -35,9 +39,29 @@
         android:id="@+id/profileFragment"
         android:name="akshat.assignment.quiznow.fragments.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="akshat.assignment.quiznow.fragments.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" >
+        <action
+            android:id="@+id/action_resultFragment_to_startGameFragment"
+            app:destination="@id/startGameFragment" />
+        <action
+            android:id="@+id/action_resultFragment_to_questionsFragment"
+            app:destination="@id/questionsFragment" />
+        <argument
+            android:name="score"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="maxScore"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>
